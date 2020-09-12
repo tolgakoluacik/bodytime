@@ -1,6 +1,4 @@
-import 'package:fancyin/api/base_call.dart' as BaseCall;
-import 'package:fancyin/models/business.dart';
-import 'package:fancyin/models/phenomenon.dart';
+import 'package:bodytime/api/base_call.dart' as BaseCall;
 
 class Login extends BaseCall.BasePostCall<LoginResponse> {
 
@@ -23,8 +21,6 @@ class Login extends BaseCall.BasePostCall<LoginResponse> {
     response.encryptedAccessToken = data["result"]["encryptedAccessToken"];
     response.expireInSeconds = data["result"]["expireInSeconds"];
     response.userId = data["result"]["userId"];
-    response.phenomenon = Phenomenon.fromDynamic(data["result"]["phenomenon"]);
-    response.business = Business.fromDynamic(data["result"]["business"]);
     return response;
   }
 }
@@ -34,6 +30,4 @@ class LoginResponse {
   String encryptedAccessToken;
   int expireInSeconds;
   int userId;
-  Phenomenon phenomenon;
-  Business business;
 }

@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:fancyin/models/user_friendly_exception.dart';
-import 'package:fancyin/utils/preferences.dart';
+import 'package:bodytime/utils/preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:fancyin/configurations.dart' as Configurations;
+import 'package:bodytime/configurations.dart' as Configurations;
 
 enum RequestType { GET, POST }
 
@@ -63,20 +62,21 @@ abstract class BaseCall<ResultType> {
           '---- HttpCall End -------------------------------------------------------------------------------------');
 
     if (response.statusCode != 200) {
-      BackendError backendError;
-      try {
-        var decodedBody = json.decode(response.body);
-        if (decodedBody["error"] != null) {
-          backendError = BackendError(decodedBody["error"]["code"],
-              decodedBody["error"]["message"], decodedBody["error"]["details"]);
-        }
-      } catch (e) {}
-
-      if (backendError != null) {
-        throw backendError;
-      } else {
-        throw HttpException("Beklenmedik bir sorun oluştu.");
-      }
+      // BackendError backendError;
+      // try {
+      //   var decodedBody = json.decode(response.body);
+      //   if (decodedBody["error"] != null) {
+      //     backendError = BackendError(decodedBody["error"]["code"],
+      //         decodedBody["error"]["message"], decodedBody["error"]["details"]);
+      //   }
+      // } catch (e) {}
+      //
+      // if (backendError != null) {
+      //   throw backendError;
+      // } else {
+      //   throw HttpException("Beklenmedik bir sorun oluştu.");
+      // }
+      throw HttpException("Beklenmedik bir sorun oluştu.");
     }
 
     var decoded = json.decode(response.body);
