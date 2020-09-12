@@ -1,78 +1,110 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:fancyin/models/user_friendly_exception.dart';
+import 'package:fancyin/utils/preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:bodytime/configurations.dart' as Configurations;
+import 'package:fancyin/configurations.dart' as Configurations;
 
-enum RequestType {
-  GET,
-  POST
-}
+enum RequestType { GET, POST }
 
 const DEBUG = true;
 
 abstract class BaseCall<ResultType> {
+  Map<String, String> queryParams = new Map();
 
   String get requestUrl;
-  Map<String, Object> get body;
+
+  dynamic get body;
+
   RequestType get requestType;
 
   Future<ResultType> call() async {
-
     var url = Configurations.getWebserviceUrl() + requestUrl;
+
+    if (queryParams.length > 0) {
+      url += "?";
+
+      queryParams.forEach((key, value) => {url += key + "=" + value + "&"});
+
+      url = url.substring(0, url.length - 1);
+    }
+
     var response;
+    var token = Storage.getString("accessToken");
+    Map<String, String> headers = {};
 
-    if (DEBUG) print('---- HttpCall Start -----------------------------------------------------------------------------------');
+    if (token != null) {
+      headers["Authorization"] = "Bearer " + token;
+    }
+
+    if (DEBUG)
+      print(
+          '---- HttpCall Start -----------------------------------------------------------------------------------');
+
     if (requestType == RequestType.GET) {
-
-      if (DEBUG) print('---- HttpGet: $url');
-      response = await http.get(url);
+      if (DEBUG) print('---- HttpGet: ${url}');
+      response = await http.get(url, headers: headers);
 
     } else if (requestType == RequestType.POST) {
+      if (DEBUG) print('---- HttpPost: ${url}');
+      if (DEBUG) print('---- Request Params: ${body}');
 
-      body.putIfAbsent('token', () => Configurations.getToken());
+      headers["Content-Type"] = "application/json";
 
-      if (DEBUG) print('---- HttpPost: $url');
-      if (DEBUG) print('---- Request Params: $body');
-      response = await http.post(url, body: body);
+      response =
+          await http.post(url, body: json.encode(body), headers: headers);
     }
 
     if (DEBUG) print('---- Response Status: ${response.statusCode}');
     if (DEBUG) print('---- Response Body: ${response.body}');
-    if (DEBUG) print('---- HttpCall End -------------------------------------------------------------------------------------');
+    if (DEBUG)
+      print(
+          '---- HttpCall End -------------------------------------------------------------------------------------');
 
     if (response.statusCode != 200) {
-      throw HttpException("Kan geen verbinding maken, probeer later nog eens.");
+      BackendError backendError;
+      try {
+        var decodedBody = json.decode(response.body);
+        if (decodedBody["error"] != null) {
+          backendError = BackendError(decodedBody["error"]["code"],
+              decodedBody["error"]["message"], decodedBody["error"]["details"]);
+        }
+      } catch (e) {}
+
+      if (backendError != null) {
+        throw backendError;
+      } else {
+        throw HttpException("Beklenmedik bir sorun oluştu.");
+      }
     }
 
     var decoded = json.decode(response.body);
 
-    if (decoded["messageCode"] != 107) {
-      throw HttpException("Kan geen verbinding maken, probeer later nog eens.");
-    }
-
-    if (decoded["data"] == null && (decoded["dataList"] == null || !(decoded["dataList"] is List))) {
-      throw HttpException("Kan geen verbinding maken, probeer later nog eens.");
-    }
-
-    return parse(decoded["data"], decoded["dataList"]);
+    return parse(decoded);
   }
 
-  ResultType parse(dynamic data, List dataList);
+  ResultType parse(dynamic data);
 }
 
 abstract class BaseGetCall<ResultType> extends BaseCall<ResultType> {
-
   String get requestUrl;
-  Map<String, Object> get body => null;
+
+  dynamic get body => null;
+
   RequestType get requestType => RequestType.GET;
 }
 
 abstract class BasePostCall<ResultType> extends BaseCall<ResultType> {
-
-  Map<String, Object> _body = new Map();
+  dynamic _body;
 
   String get requestUrl;
-  Map<String, Object> get body => _body;
+
+  dynamic get body => _body;
+
   RequestType get requestType => RequestType.POST;
+
+  setBody(dynamic body) {
+    this._body = body;
+  }
 }
