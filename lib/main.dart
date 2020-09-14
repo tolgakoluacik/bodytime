@@ -69,7 +69,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _appLoading = true;
   bool _loggedIn = false;
-  Widget _body = Profile();
+  Widget _body = Dashboard();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -103,6 +103,23 @@ class _MyHomePageState extends State<MyHomePage> {
     await flutterLocalNotificationsPlugin.show(
         0, title, body, platformChannelSpecifics,
         payload: 'Tıklandı !!!!!!!!!!!!!');
+  }
+
+  int _selectedIndex = 0;
+
+  void _changePage(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _body = _showPage(_selectedIndex);
+    });
+  }
+
+  Widget _showPage(int selectedIndex) {
+    if (selectedIndex == 0) return Dashboard();
+    if (selectedIndex == 1) return Dashboard();
+    if (selectedIndex == 2) return Dashboard();
+    if (selectedIndex == 3) return Dashboard();
+    if (selectedIndex == 4) return Profile();
   }
 
   @override
@@ -155,45 +172,90 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildBodyWithSession() {
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: GestureDetector(
-          onTap: () async {},
-          child: Text(
-            widget.title,
-            style: TextStyle(
-              color: Colors.white,
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: GestureDetector(
+            onTap: () async {},
+            child: Text(
+              widget.title,
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
+          backgroundColor: PRIMARY_COLOR,
         ),
-        backgroundColor: PRIMARY_COLOR,
-      ),
-      drawer: DrawerLayout([
-        new DrawerMenuItem("Profile", Icons.account_circle, () {
-          setState(() {
-            _body = Profile();
-          });
-        }),
-        new DrawerMenuItem("Dashboard", Icons.dashboard, () {
-          setState(() {
-            _body = Dashboard();
-          });
-        }),
-        new DrawerMenuItem("Turnstile", Icons.transit_enterexit, () {
-          setState(() {
-            _body = TurnStile();
-          });
-        }),
-        new DrawerMenuItem("Çıkış", Icons.exit_to_app, () {
-          setState(() {
-            _loggedIn = false;
-            _body = Profile();
-          });
-        }),
-      ]),
-      body: _body,
-    );
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(canvasColor: PRIMARY_COLOR),
+          child: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _changePage,
+            type: BottomNavigationBarType.fixed,
+            fixedColor: Colors.white,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.dashboard),
+                title: Text(
+                  'Anasayfa',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.event),
+                title: Text(
+                  'Randevular',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.donut_small),
+                title: Text(
+                  'Beslenme',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.accessibility_new),
+                title: Text(
+                  'Olcum',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle),
+                title: Text(
+                  'Profil',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+        ),
+        drawer: DrawerLayout([
+          new DrawerMenuItem("Profile", Icons.account_circle, () {
+            setState(() {
+              _body = Profile();
+            });
+          }),
+          new DrawerMenuItem("Dashboard", Icons.dashboard, () {
+            setState(() {
+              _body = Dashboard();
+            });
+          }),
+          new DrawerMenuItem("Turnstile", Icons.transit_enterexit, () {
+            setState(() {
+              _body = TurnStile();
+            });
+          }),
+          new DrawerMenuItem("Çıkış", Icons.exit_to_app, () {
+            setState(() {
+              _loggedIn = false;
+              _body = Profile();
+            });
+          }),
+        ]),
+        body: _body);
   }
 
   @override

@@ -15,7 +15,7 @@ class GetAddress extends BaseCall.BasePostCall<List<Address>> {
   }
 
   @override
-  List<Address> parse(dynamic data, List dataList) {
-    return dataList.map((item) => Address.fromDynamic(item)).toList();
+  List<Address> parse(dynamic data) {
+    return data.map((item) => Address.fromDynamic(item)).toList();
   }
 }

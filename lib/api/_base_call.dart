@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:bodytime/utils/preferences.dart';
+import 'package:fancyin/models/user_friendly_exception.dart';
+import 'package:bo/utils/preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:bodytime/configurations.dart' as Configurations;
+import 'package:fancyin/configurations.dart' as Configurations;
 
 enum RequestType { GET, POST }
 
@@ -30,7 +31,7 @@ abstract class BaseCall<ResultType> {
     }
 
     var response;
-    var token = Storage.getString("token");
+    var token = Storage.getString("accessToken");
     Map<String, String> headers = {};
 
     if (token != null) {
@@ -52,7 +53,7 @@ abstract class BaseCall<ResultType> {
       headers["Content-Type"] = "application/json";
 
       response =
-      await http.post(url, body: json.encode(body), headers: headers);
+          await http.post(url, body: json.encode(body), headers: headers);
     }
 
     if (DEBUG) print('---- Response Status: ${response.statusCode}');
@@ -62,21 +63,20 @@ abstract class BaseCall<ResultType> {
           '---- HttpCall End -------------------------------------------------------------------------------------');
 
     if (response.statusCode != 200) {
-      // BackendError backendError;
-      // try {
-      //   var decodedBody = json.decode(response.body);
-      //   if (decodedBody["error"] != null) {
-      //     backendError = BackendError(decodedBody["error"]["code"],
-      //         decodedBody["error"]["message"], decodedBody["error"]["details"]);
-      //   }
-      // } catch (e) {}
-      //
-      // if (backendError != null) {
-      //   throw backendError;
-      // } else {
-      //   throw HttpException("Beklenmedik bir sorun oluştu.");
-      // }
-      throw HttpException("Beklenmedik bir sorun oluştu.");
+      BackendError backendError;
+      try {
+        var decodedBody = json.decode(response.body);
+        if (decodedBody["error"] != null) {
+          backendError = BackendError(decodedBody["error"]["code"],
+              decodedBody["error"]["message"], decodedBody["error"]["details"]);
+        }
+      } catch (e) {}
+
+      if (backendError != null) {
+        throw backendError;
+      } else {
+        throw HttpException("Beklenmedik bir sorun oluştu.");
+      }
     }
 
     var decoded = json.decode(response.body);

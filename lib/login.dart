@@ -1,4 +1,6 @@
+import 'package:bodytime/api/login.dart';
 import 'package:bodytime/forgot_password.dart';
+import 'package:bodytime/utils/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,6 +23,9 @@ class _LoginState extends State<Login> {
   _LoginState(Function onAuthorized) {
     this._onAuthorized = onAuthorized;
   }
+
+  String _phone = '';
+  String _password = '';
 
   @override
   void initState() {
@@ -109,6 +114,11 @@ class _LoginState extends State<Login> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
+                          onChanged: (phone) {
+                            setState(() {
+                              _phone = phone.trim();
+                            });
+                          },
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -151,6 +161,11 @@ class _LoginState extends State<Login> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
+                          onChanged: (password) {
+                            setState(() {
+                              _password = password.trim();
+                            });
+                          },
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -173,9 +188,14 @@ class _LoginState extends State<Login> {
               ),
               FlatButton(
                 onPressed: () {
-                  if (_onAuthorized != null) {
-                    _onAuthorized.call();
-                  }
+                  // if (_onAuthorized != null) {
+                  //   _onAuthorized.call();
+                  // }
+                  LoginRequest(_phone, _password).call().then(
+                        (result) {
+                          Storage.putString("token", result.token);
+                          _onAuthorized();
+                        });
                 },
                 child: Container(
                   decoration: BoxDecoration(
