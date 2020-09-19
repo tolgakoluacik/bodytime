@@ -1,10 +1,10 @@
 class Subscriber {
 
-  String id = "";
-  String about = "";
-  String name = "";
-  String phone = "";
-  bool isPhoneVerified = false;
+  String id;
+  String about;
+  String name;
+  String phone;
+  bool isPhoneVerified;
   String birthYear = "";
   String branch = "";
   String cardNo = "";

@@ -2,6 +2,7 @@ import 'package:bodytime/dashboard.dart';
 import 'package:bodytime/login.dart';
 import 'package:bodytime/models/drawer_menu_item.dart';
 import 'package:bodytime/profile.dart';
+import 'package:bodytime/reservations.dart';
 import 'package:bodytime/splash.dart';
 import 'package:bodytime/turnstile.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,6 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:bodytime/configurations.dart';
 import 'package:bodytime/drawer_layout.dart';
+
+import 'configurations.dart';
+import 'configurations.dart';
+import 'configurations.dart';
+import 'utils/preferences.dart';
 
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
   if (message.containsKey('data')) {
@@ -41,7 +47,8 @@ class MyApp extends StatelessWidget {
         // "hot reload" (press "r" in the console where you ran "flutter run",
         // or press Run > Flutter Hot Reload in a Flutter IDE). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
+        primaryColor: SECONDARY_COLOR,
+        accentColor: PRIMARY_COLOR
       ),
       home: MyHomePage(title: 'Body Time'),
     );
@@ -116,15 +123,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _showPage(int selectedIndex) {
     if (selectedIndex == 0) return Dashboard();
-    if (selectedIndex == 1) return Dashboard();
+    if (selectedIndex == 1) return ReservationList();
     if (selectedIndex == 2) return Dashboard();
     if (selectedIndex == 3) return Dashboard();
-    if (selectedIndex == 4) return Profile();
+    if (selectedIndex == 4) return Profile(onClickLogout: () {
+      Storage.putString("token", null);
+      Storage.putString("sessionUser", null);
+      setState(() {
+        _loggedIn = false;
+      });
+    });;
   }
 
   @override
   void initState() {
     super.initState();
+
+    Storage.getInstance().then((value) {
+      if (Storage.getString("token") != null && Storage.getString("sessionUser") != null) {
+        setState(() {
+          _loggedIn = true;
+        });
+      }
+    });
 
     _initializeNotificationSettings();
 
@@ -232,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        drawer: DrawerLayout([
+        /*drawer: DrawerLayout([
           new DrawerMenuItem("Profile", Icons.account_circle, () {
             setState(() {
               _body = Profile();
@@ -250,11 +271,14 @@ class _MyHomePageState extends State<MyHomePage> {
           }),
           new DrawerMenuItem("Çıkış", Icons.exit_to_app, () {
             setState(() {
-              _loggedIn = false;
-              _body = Profile();
+              _body = Profile(onClickLogout: () {
+                Storage.putString("token", null);
+                Storage.putString("sessionUser", null);
+                _loggedIn = false;
+              });
             });
           }),
-        ]),
+        ]),*/
         body: _body);
   }
 

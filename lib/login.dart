@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:bodytime/api/define_password.dart';
+import 'package:bodytime/api/get_profile.dart';
 import 'package:bodytime/api/login.dart';
 import 'package:bodytime/api/register.dart';
 import 'package:bodytime/api/verify_user.dart';
@@ -212,6 +215,7 @@ class _LoginState extends State<Login> {
                       // }
                       LoginRequest(_phone, _password).call().then((result) {
                         Storage.putString("token", result.token);
+                        Storage.putString("sessionUser", json.encode(result.subscriber));
                         _onAuthorized();
                       });
                     },

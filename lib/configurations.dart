@@ -11,6 +11,7 @@ const APPLICATION_MODE = ApplicationMode.DEV;
 
 const Color PRIMARY_COLOR = Color(0xFFFF6700);
 const Color SECONDARY_COLOR = Color(0xFF4E546C);
+const Color SECONDARY_DARK_COLOR = Color(0xFF3A3F51);
 
 const String REST_TOKEN_DEV = "";
 const String REST_TOKEN_LIVE = "";

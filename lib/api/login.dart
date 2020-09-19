@@ -15,13 +15,12 @@ class LoginRequest extends BaseCall.BasePostCall<LoginResponse> {
   LoginResponse parse(data) {
     var response = LoginResponse();
     response.token = data["token"];
-    response.subscriber =
-        Subscriber.fromDynamic(data["subscriberObj"]);
+    response.subscriber = data["subscriberObj"];
     return response;
   }
 }
 
 class LoginResponse {
   String token;
-  Subscriber subscriber;
+  dynamic subscriber;
 }
