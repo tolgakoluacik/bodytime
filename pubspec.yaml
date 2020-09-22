@@ -33,6 +33,8 @@ dependencies:
   firebase_messaging: ^5.1.6
   flutter_local_notifications:
   flutter_secure_storage:
+  flutter_html:
+  flutter_webview_plugin:
 
 dev_dependencies:
   flutter_test:

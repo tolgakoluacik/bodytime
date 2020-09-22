@@ -8,7 +8,8 @@ class GetReservations extends BaseCall.BasePostCall<List<Reservation>> {
 
   GetReservations() {
     setBody({
-      "params": {"collection" : "reservations"}
+      "params": {"collection" : "reservations", "sort":{"date" : 1}
+      }
     });
   }
 

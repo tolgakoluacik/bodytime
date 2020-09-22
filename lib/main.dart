@@ -1,6 +1,8 @@
 import 'package:bodytime/dashboard.dart';
 import 'package:bodytime/login.dart';
+import 'package:bodytime/measurement.dart';
 import 'package:bodytime/models/drawer_menu_item.dart';
+import 'package:bodytime/nutrition.dart';
 import 'package:bodytime/profile.dart';
 import 'package:bodytime/reservations.dart';
 import 'package:bodytime/splash.dart';
@@ -33,23 +35,14 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Body Time',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in a Flutter IDE). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
-        primaryColor: SECONDARY_COLOR,
-        accentColor: PRIMARY_COLOR
-      ),
+          primaryColor: SECONDARY_COLOR,
+          accentColor: PRIMARY_COLOR),
       home: MyHomePage(title: 'Body Time'),
     );
   }
@@ -57,15 +50,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -124,15 +108,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _showPage(int selectedIndex) {
     if (selectedIndex == 0) return Dashboard();
     if (selectedIndex == 1) return ReservationList();
-    if (selectedIndex == 2) return Dashboard();
-    if (selectedIndex == 3) return Dashboard();
-    if (selectedIndex == 4) return Profile(onClickLogout: () {
-      Storage.putString("token", null);
-      Storage.putString("sessionUser", null);
-      setState(() {
-        _loggedIn = false;
+    if (selectedIndex == 2) return Nutrition();
+    if (selectedIndex == 3) return Measurement();
+    if (selectedIndex == 4)
+      return Profile(onClickLogout: () {
+        Storage.putString("token", null);
+        Storage.putString("sessionUser", null);
+        setState(() {
+          _loggedIn = false;
+        });
       });
-    });;
+    ;
   }
 
   @override
@@ -140,7 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     Storage.getInstance().then((value) {
-      if (Storage.getString("token") != null && Storage.getString("sessionUser") != null) {
+      if (Storage.getString("token") != null &&
+          Storage.getString("sessionUser") != null) {
         setState(() {
           _loggedIn = true;
         });
@@ -171,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );*/
       },
+
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
@@ -193,27 +181,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildBodyWithSession() {
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: GestureDetector(
-            onTap: () async {},
-            child: Text(
-              widget.title,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
+      appBar: AppBar(
+        centerTitle: true,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: GestureDetector(
+          onTap: () async {},
+          child: Image.network(
+            "https://www.bodytime01.com/assets/img/logo.png",
+            height: 50,
           ),
-          backgroundColor: PRIMARY_COLOR,
         ),
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(canvasColor: PRIMARY_COLOR),
+        backgroundColor: SECONDARY_COLOR,
+      ),
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(canvasColor: SECONDARY_COLOR),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
           child: BottomNavigationBar(
+            unselectedItemColor: Colors.white,
             currentIndex: _selectedIndex,
             onTap: _changePage,
             type: BottomNavigationBarType.fixed,
-            fixedColor: Colors.white,
+            fixedColor: PRIMARY_COLOR,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.dashboard),
@@ -253,33 +253,35 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        /*drawer: DrawerLayout([
-          new DrawerMenuItem("Profile", Icons.account_circle, () {
-            setState(() {
-              _body = Profile();
-            });
-          }),
-          new DrawerMenuItem("Dashboard", Icons.dashboard, () {
-            setState(() {
-              _body = Dashboard();
-            });
-          }),
-          new DrawerMenuItem("Turnstile", Icons.transit_enterexit, () {
-            setState(() {
-              _body = TurnStile();
-            });
-          }),
-          new DrawerMenuItem("Çıkış", Icons.exit_to_app, () {
-            setState(() {
-              _body = Profile(onClickLogout: () {
-                Storage.putString("token", null);
-                Storage.putString("sessionUser", null);
-                _loggedIn = false;
+      ),
+      /*drawer: DrawerLayout([
+            new DrawerMenuItem("Profile", Icons.account_circle, () {
+              setState(() {
+                _body = Profile();
               });
-            });
-          }),
-        ]),*/
-        body: _body);
+            }),
+            new DrawerMenuItem("Dashboard", Icons.dashboard, () {
+              setState(() {
+                _body = Dashboard();
+              });
+            }),
+            new DrawerMenuItem("Turnstile", Icons.transit_enterexit, () {
+              setState(() {
+                _body = TurnStile();
+              });
+            }),
+            new DrawerMenuItem("Çıkış", Icons.exit_to_app, () {
+              setState(() {
+                _body = Profile(onClickLogout: () {
+                  Storage.putString("token", null);
+                  Storage.putString("sessionUser", null);
+                  _loggedIn = false;
+                });
+              });
+            }),
+          ]),*/
+      body: _body,
+    );
   }
 
   @override

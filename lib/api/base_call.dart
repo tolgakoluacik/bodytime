@@ -42,12 +42,12 @@ abstract class BaseCall<ResultType> {
           '---- HttpCall Start -----------------------------------------------------------------------------------');
 
     if (requestType == RequestType.GET) {
-      if (DEBUG) print('---- HttpGet: ${url}');
+      if (DEBUG) print('---- HttpGet: $url');
       response = await http.get(url, headers: headers);
 
     } else if (requestType == RequestType.POST) {
-      if (DEBUG) print('---- HttpPost: ${url}');
-      if (DEBUG) print('---- Request Params: ${body}');
+      if (DEBUG) print('---- HttpPost: $url');
+      if (DEBUG) print('---- Request Params: $body');
 
       headers["Content-Type"] = "application/json";
 

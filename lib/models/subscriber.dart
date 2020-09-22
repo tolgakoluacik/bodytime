@@ -10,6 +10,7 @@ class Subscriber {
   String cardNo = "";
   String gender = "";
   String instructor = "";
+  String measure = "";
 
   static Subscriber fromDynamic(dynamic obj) {
     Subscriber subscriber = new Subscriber();
@@ -24,6 +25,7 @@ class Subscriber {
     subscriber.cardNo = obj["cardNo"];
     subscriber.gender = obj["gender"];
     subscriber.instructor = obj["instructor"];
+    subscriber.measure = obj["measure"];
 
     return subscriber;
   }
