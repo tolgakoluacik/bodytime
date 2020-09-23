@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'configurations.dart';
 
 class ReservationList extends StatefulWidget {
-  ReservationList({Key key}) : super(key: key);
+  ReservationList({Key key }) : super(key: key);
 
   @override
   _ReservationListState createState() => _ReservationListState();

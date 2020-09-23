@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'configurations.dart';
 import 'models/subscriber.dart';
-import 'models/subscriber.dart';
 import 'utils/preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -45,23 +44,24 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           Expanded(
-              child: CustomScrollView(
-            shrinkWrap: true,
-            slivers: <Widget>[
-              SliverPadding(
-                padding: const EdgeInsets.all(0.0),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    <Widget>[
-                      _buildProperty(Icons.contacts, _subscriber.name, 20),
-                      _buildProperty(Icons.phone, _subscriber.phone, 28),
-                      _buildProperty(Icons.event, _subscriber.birthYear, 90),
-                    ],
+            child: CustomScrollView(
+              shrinkWrap: true,
+              slivers: <Widget>[
+                SliverPadding(
+                  padding: const EdgeInsets.all(0.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      <Widget>[
+                        _buildProperty(Icons.contacts, _subscriber.name, 20),
+                        _buildProperty(Icons.phone, _subscriber.phone, 28),
+                        _buildProperty(Icons.event, _subscriber.birthYear, 90),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )),
+              ],
+            ),
+          ),
           RaisedButton(
             onPressed: () {
               widget.onClickLogout();

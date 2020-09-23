@@ -67,6 +67,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: TextField(
+                                  keyboardType: TextInputType.numberWithOptions(
+                                    decimal: false,
+                                  ),
                                   controller: _textField,
                                   onChanged: (phone) {
                                     setState(() {
@@ -221,9 +224,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               .then((result) {
                             if (result.success == true) {
                               setState(() {
-                                _definePasswordToken = result.definePasswordToken;
+                                _definePasswordToken =
+                                    result.definePasswordToken;
                               });
-                              Storage.putString("definePasswordToken", result.definePasswordToken);
+                              Storage.putString("definePasswordToken",
+                                  result.definePasswordToken);
                             }
                           }).whenComplete(
                             () => Navigator.pop(context),

@@ -1,20 +1,18 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bodytime/configurations.dart';
-import 'package:bodytime/main.dart';
-import 'package:bodytime/reservations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'models/subscriber.dart';
 import 'utils/preferences.dart';
 
 class Dashboard extends StatefulWidget {
-  Dashboard({Key key, this.title}) : super(key: key);
+  Dashboard({Key key, this.title, this.onSelected}) : super(key: key);
 
   final String title;
-
+  final Function(int) onSelected;
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -30,28 +28,30 @@ class _DashboardState extends State<Dashboard> {
         Subscriber.fromDynamic(json.decode(Storage.getString("sessionUser")));
   }
 
-  Widget generateMenuCell(Color color, IconData icon, String text,
-      {Function onClick}) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      color: color,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 50,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.white),
-              textAlign: TextAlign.center,
+  Widget generateMenuCell(Color color, IconData icon, String text, int index) {
+    return GestureDetector(
+      onTap: () => widget.onSelected(index),
+      child: Container(
+        padding: EdgeInsets.all(20),
+        color: color,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 50,
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                text,
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -94,12 +94,12 @@ class _DashboardState extends State<Dashboard> {
             color: SECONDARY_COLOR,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Kalan Randevu Sayisi:",
+                    "Kalan Seans Sayisi:",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -113,6 +113,41 @@ class _DashboardState extends State<Dashboard> {
                       color: Colors.white,
                       fontWeight: FontWeight.w500),
                 ),
+                Expanded(child: Container()),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    onPressed: () {
+                      AwesomeDialog(
+                        context: context,
+                        width: 400,
+                        dialogType: DialogType.NO_HEADER,
+                        btnOkIcon: Icons.launch,
+                        btnOkText: "Turnikeyi Ac",
+                        btnCancelIcon: Icons.cancel,
+                        btnCancelText: "Vazgec",
+                        useRootNavigator: true,
+                        animType: AnimType.BOTTOMSLIDE,
+                        title: 'Hosgeldiniz',
+                        desc:
+                            'Eger Turnikeyi Ac butonuna basarsaniz, 1 seansinizi kullanmis olacaksiniz.',
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {},
+                      )..show();
+                    },
+                    color: PRIMARY_COLOR,
+                    child: Text(
+                      "Salona Giris Yap",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Colors.white),
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -121,28 +156,12 @@ class _DashboardState extends State<Dashboard> {
               crossAxisCount: 2,
               children: [
                 generateMenuCell(
-                  Color(0xFFF6334B),
-                  Icons.event,
-                  "Randevular",
-                   onClick: () {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(
-                         builder: (context) => ReservationList(),
-                         // Pass the arguments as part of the RouteSettings. The
-                         // DetailScreen reads the arguments from these settings.
-                         settings: RouteSettings(
-                           arguments: widget.key,
-                         ),
-                       ),
-                     );
-                   }
-                ),
+                    Color(0xFFF6334B), Icons.event, "Randevular", 1),
                 generateMenuCell(
-                    Color(0xFF33ABF5), Icons.donut_small, "Beslenme"),
-                generateMenuCell(
-                    Color(0xFF9683A3), Icons.accessibility_new, "Vucut Olcum"),
-                generateMenuCell(Color(0xFFB3B2B0), Icons.book, "Paketler"),
+                    Color(0xFF33ABF5), Icons.donut_small, "Beslenme", 2),
+                generateMenuCell(Color(0xFF9683A3), Icons.accessibility_new,
+                    "Vucut Olcum", 3),
+                generateMenuCell(Color(0xFFB3B2B0), Icons.book, "Paketler", 4),
               ],
             ),
           ),

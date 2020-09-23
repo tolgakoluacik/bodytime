@@ -35,15 +35,16 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Body Time',
-      theme: ThemeData(
-          primaryColor: SECONDARY_COLOR,
-          accentColor: PRIMARY_COLOR),
+      theme:
+          ThemeData(primaryColor: SECONDARY_COLOR, accentColor: PRIMARY_COLOR),
       home: MyHomePage(title: 'Body Time'),
+      routes: {
+        '/turnstile' : (context) => Profile(),
+      },
     );
   }
 }
@@ -60,7 +61,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _appLoading = true;
   bool _loggedIn = false;
-  Widget _body = Dashboard();
+  Widget _body;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -105,8 +106,18 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  onDashboardItemSelected(index) {
+    setState(() {
+      _selectedIndex = index;
+      _body = _showPage(index);
+    });
+  }
+
+
+
   Widget _showPage(int selectedIndex) {
-    if (selectedIndex == 0) return Dashboard();
+    if (selectedIndex == 0)
+      return Dashboard(onSelected: onDashboardItemSelected);
     if (selectedIndex == 1) return ReservationList();
     if (selectedIndex == 2) return Nutrition();
     if (selectedIndex == 3) return Measurement();
@@ -124,6 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+    _body = Dashboard(onSelected: onDashboardItemSelected);
 
     Storage.getInstance().then((value) {
       if (Storage.getString("token") != null &&
@@ -158,7 +171,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );*/
       },
-
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");

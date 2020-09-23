@@ -35,6 +35,7 @@ dependencies:
   flutter_secure_storage:
   flutter_html:
   flutter_webview_plugin:
+  awesome_dialog:
 
 dev_dependencies:
   flutter_test:

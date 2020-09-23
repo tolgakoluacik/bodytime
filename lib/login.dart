@@ -117,6 +117,9 @@ class _LoginState extends State<Login> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: TextField(
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: false,
+                            ),
                             controller: _textField,
                             onChanged: (phone) {
                               setState(() {
@@ -165,6 +168,10 @@ class _LoginState extends State<Login> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: TextField(
+                            obscureText: true,
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: false,
+                            ),
                             controller: _textField2,
                             onChanged: (password) {
                               setState(() {
@@ -175,6 +182,7 @@ class _LoginState extends State<Login> {
                               color: Colors.white,
                             ),
                             decoration: InputDecoration(
+                                isDense: true,
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -216,7 +224,8 @@ class _LoginState extends State<Login> {
                         // }
                         LoginRequest(_phone, _password).call().then((result) {
                           Storage.putString("token", result.token);
-                          Storage.putString("sessionUser", json.encode(result.subscriber));
+                          Storage.putString(
+                              "sessionUser", json.encode(result.subscriber));
                           _onAuthorized();
                         });
                       },
@@ -319,6 +328,9 @@ class _LoginState extends State<Login> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: false,
+                          ),
                           controller: _textField,
                           onChanged: (phone) {
                             setState(() {
@@ -447,6 +459,9 @@ class _LoginState extends State<Login> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: false,
+                          ),
                           controller: _textField,
                           onChanged: (verificationCode) {
                             setState(() {
@@ -583,6 +598,7 @@ class _LoginState extends State<Login> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
+                          obscureText: true,
                           onChanged: (password) {
                             setState(() {
                               _password = password.trim();
@@ -681,5 +697,4 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
 }
