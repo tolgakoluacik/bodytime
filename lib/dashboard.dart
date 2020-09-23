@@ -122,6 +122,7 @@ class _DashboardState extends State<Dashboard> {
                       AwesomeDialog(
                         context: context,
                         width: 400,
+                        dismissOnTouchOutside: false,
                         dialogType: DialogType.NO_HEADER,
                         btnOkIcon: Icons.launch,
                         btnOkText: "Turnikeyi Ac",
@@ -129,9 +130,9 @@ class _DashboardState extends State<Dashboard> {
                         btnCancelText: "Vazgec",
                         useRootNavigator: true,
                         animType: AnimType.BOTTOMSLIDE,
-                        title: 'Hosgeldiniz',
+                        title: 'BodyTime\'a Hosgeldiniz!',
                         desc:
-                            'Eger Turnikeyi Ac butonuna basarsaniz, 1 seansinizi kullanmis olacaksiniz.',
+                            'Bu islemi gerceklestirebilmek icin randevu saatinizden en az 10 dakika once salonda olmalisiniz. Tek Kullanim Hakkiniz Bulunmaktadir.',
                         btnCancelOnPress: () {},
                         btnOkOnPress: () {},
                       )..show();
