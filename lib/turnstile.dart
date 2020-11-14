@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bodytime/configurations.dart';
 
 class TurnStile extends StatefulWidget {
   TurnStile({Key key, this.title}) : super(key: key);

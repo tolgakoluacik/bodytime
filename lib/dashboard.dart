@@ -56,6 +56,27 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget _buildProfileText(String name) {
+    String firstLetter = name.split(" ")[0][0];
+    String secondLetter = name.split(" ")[1][0];
+
+    return Container(
+      padding: EdgeInsets.all(33),
+      decoration: BoxDecoration(
+        color: _subscriber.gender == 'erkek' ? Color(0xFF138BF2) : Color(0xFFC003D9),
+        borderRadius: BorderRadius.all(Radius.circular(100)),
+      ),
+      child: Text(
+        firstLetter + secondLetter,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 35,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,12 +86,7 @@ class _DashboardState extends State<Dashboard> {
             padding: const EdgeInsets.all(10.0),
             child: SizedBox(
               height: 100,
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(_subscriber.gender == 'erkek'
-                    ? "https://image.freepik.com/free-vector/profile-icon-male-avatar-hipster-man-wear-headphones_48369-8728.jpg"
-                    : "https://image.freepik.com/free-vector/profile-icon-female-avatar-hipster-woman-wear-headphones_48369-8726.jpg"),
-              ),
+              child: _buildProfileText(_subscriber.name),
             ),
           ),
           Text(

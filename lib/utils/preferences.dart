@@ -36,7 +36,7 @@ class Storage {
 
   static Future putInt(String key, int value) {
     if (_preferences == null) return null;
-    return _preferences.setString(key, "${value}");
+    return _preferences.setString(key, "$value");
   }
 
   static double getDouble(String key, {double defValue}) {
@@ -46,7 +46,7 @@ class Storage {
 
   static Future putDouble(String key, double value) {
     if (_preferences == null) return null;
-    return _preferences.setString(key, "${value}");
+    return _preferences.setString(key, "$value");
   }
 
   static bool getBoolean(String key, {bool defValue}) {

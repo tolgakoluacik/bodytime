@@ -25,8 +25,6 @@ class _MeasurementState extends State<Measurement> {
 
     _subscriber =
         Subscriber.fromDynamic(json.decode(Storage.getString("sessionUser")));
-
-    HtmlEscape htmlEscape = const HtmlEscape();
   }
 
   @override

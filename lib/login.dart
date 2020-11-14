@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bodytime/api/define_password.dart';
-import 'package:bodytime/api/get_profile.dart';
 import 'package:bodytime/api/login.dart';
 import 'package:bodytime/api/register.dart';
 import 'package:bodytime/api/verify_user.dart';
@@ -51,22 +50,22 @@ class _LoginState extends State<Login> {
     _textField2?.clear();
   }
 
-  void _showMaterialDialog(String title, String content) {
-    showDialog(
-        context: context,
-        builder: (_) => new AlertDialog(
-              title: new Text(title),
-              content: new Text(content),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Kapat'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            ));
-  }
+  // void _showMaterialDialog(String title, String content) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (_) => new AlertDialog(
+  //             title: new Text(title),
+  //             content: new Text(content),
+  //             actions: <Widget>[
+  //               FlatButton(
+  //                 child: Text('Kapat'),
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //               )
+  //             ],
+  //           ));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +78,13 @@ class _LoginState extends State<Login> {
                 : (_isDefinePassword == true
                     ? _buildDefinePassword()
                     : _buildLogin())));
+  }
+
+  Widget _buildProgress() {
+    return Container(
+      alignment: Alignment.center,
+      child: CircularProgressIndicator(),
+    );
   }
 
   Widget _buildLogin() {
@@ -294,407 +300,420 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildRegister() {
-    return Container(
-      color: Color(0xFF4E546C),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network("https://www.bodytime01.com/assets/img/logo.png"),
-              SizedBox(
-                height: 24,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0x50FFFFFF),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Row(
+    return _isRegister != true
+        ? _buildProgress()
+        : Container(
+            color: Color(0xFF4E546C),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      color: Color(0xFF5F657B),
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      padding: EdgeInsets.all(10),
+                    Image.network(
+                        "https://www.bodytime01.com/assets/img/logo.png"),
+                    SizedBox(
+                      height: 24,
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextField(
-                          keyboardType: TextInputType.numberWithOptions(
-                            decimal: false,
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0x50FFFFFF),
+                            width: 2,
                           ),
-                          controller: _textField,
-                          onChanged: (phone) {
-                            setState(() {
-                              _phone = phone.trim();
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      child: Row(
+                        children: [
+                          Container(
+                            color: Color(0xFF5F657B),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            padding: EdgeInsets.all(10),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: TextField(
+                                keyboardType: TextInputType.numberWithOptions(
+                                  decimal: false,
+                                ),
+                                controller: _textField,
+                                onChanged: (phone) {
+                                  setState(() {
+                                    _phone = phone.trim();
+                                  });
+                                },
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    hintText: "Telefon Numarası",
+                                    hintStyle: TextStyle(color: Colors.grey)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FlatButton(
+                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 36.0, vertical: 16.0),
+                              child: Text(
+                                "Kayıt Ol",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            _clearTextField();
+                            RegisterRequest(_phone).call().then((result) {
+                              if (result.success == true)
+                                setState(() {
+                                  _isLogin = false;
+                                  _isRegister = false;
+                                  _isVerification = true;
+                                });
                             });
                           },
-                          style: TextStyle(
-                            color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0x50FFFFFF),
+                            width: 2,
                           ),
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              hintText: "Telefon Numarası",
-                              hintStyle: TextStyle(color: Colors.grey)),
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: InkWell(
+                          child: Container(
+                            child: Text(
+                              'Hesabiniz mi var?',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              _isLogin = true;
+                            });
+                          },
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 12,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(horizontal: 2.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 36.0, vertical: 16.0),
-                        child: Text(
-                          "Kayıt Ol",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      _clearTextField();
-                      RegisterRequest(_phone).call().then((result) {
-                        if (result.success == true)
-                          setState(() {
-                            _isLogin = false;
-                            _isRegister = false;
-                            _isVerification = true;
-                          });
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0x50FFFFFF),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: InkWell(
-                    child: Container(
-                      child: Text(
-                        'Hesabiniz mi var?',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        _isLogin = true;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget _buildVerification() {
-    return Container(
-      color: Color(0xFF4E546C),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network("https://www.bodytime01.com/assets/img/logo.png"),
-              SizedBox(
-                height: 24,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0x50FFFFFF),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Row(
+    return _isVerification != true
+        ? _buildProgress()
+        : Container(
+            color: Color(0xFF4E546C),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      color: Color(0xFF5F657B),
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      padding: EdgeInsets.all(10),
+                    Image.network(
+                        "https://www.bodytime01.com/assets/img/logo.png"),
+                    SizedBox(
+                      height: 24,
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextField(
-                          keyboardType: TextInputType.numberWithOptions(
-                            decimal: false,
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0x50FFFFFF),
+                            width: 2,
                           ),
-                          controller: _textField,
-                          onChanged: (verificationCode) {
-                            setState(() {
-                              _verificationCode = verificationCode.trim();
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      child: Row(
+                        children: [
+                          Container(
+                            color: Color(0xFF5F657B),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            padding: EdgeInsets.all(10),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: TextField(
+                                keyboardType: TextInputType.numberWithOptions(
+                                  decimal: false,
+                                ),
+                                controller: _textField,
+                                onChanged: (verificationCode) {
+                                  setState(() {
+                                    _verificationCode = verificationCode.trim();
+                                  });
+                                },
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    hintText: "Dogrulama Kodu",
+                                    hintStyle: TextStyle(color: Colors.grey)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FlatButton(
+                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 36.0, vertical: 16.0),
+                              child: Text(
+                                "Gonder",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            _clearTextField();
+                            VerificationRequest(_phone, _verificationCode)
+                                .call()
+                                .then((result) {
+                              if (result.success == true) {
+                                _definePasswordToken =
+                                    result.definePasswordToken;
+                                setState(() {
+                                  _isLogin = false;
+                                  _isRegister = false;
+                                  _isVerification = false;
+                                  _isDefinePassword = true;
+                                });
+                              }
                             });
                           },
-                          style: TextStyle(
-                            color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0x50FFFFFF),
+                            width: 2,
                           ),
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              hintText: "Dogrulama Kodu",
-                              hintStyle: TextStyle(color: Colors.grey)),
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: InkWell(
+                          child: Container(
+                            child: Text(
+                              'Şifrenizi mi unuttunuz?',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForgotPassword(),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 12,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(horizontal: 2.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 36.0, vertical: 16.0),
-                        child: Text(
-                          "Gonder",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      _clearTextField();
-                      VerificationRequest(_phone, _verificationCode)
-                          .call()
-                          .then((result) {
-                        if (result.success == true) {
-                          _definePasswordToken = result.definePasswordToken;
-                          setState(() {
-                            _isLogin = false;
-                            _isRegister = false;
-                            _isVerification = false;
-                            _isDefinePassword = true;
-                          });
-                        }
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0x50FFFFFF),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: InkWell(
-                    child: Container(
-                      child: Text(
-                        'Şifrenizi mi unuttunuz?',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ForgotPassword(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget _buildDefinePassword() {
-    return Container(
-      color: Color(0xFF4E546C),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network("https://www.bodytime01.com/assets/img/logo.png"),
-              SizedBox(
-                height: 24,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0x50FFFFFF),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Row(
+    return _isDefinePassword != true
+        ? _buildProgress()
+        : Container(
+            color: Color(0xFF4E546C),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      color: Color(0xFF5F657B),
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      padding: EdgeInsets.all(10),
+                    Image.network(
+                        "https://www.bodytime01.com/assets/img/logo.png"),
+                    SizedBox(
+                      height: 24,
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextField(
-                          obscureText: true,
-                          onChanged: (password) {
-                            setState(() {
-                              _password = password.trim();
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0x50FFFFFF),
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      child: Row(
+                        children: [
+                          Container(
+                            color: Color(0xFF5F657B),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            padding: EdgeInsets.all(10),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: TextField(
+                                obscureText: true,
+                                onChanged: (password) {
+                                  setState(() {
+                                    _password = password.trim();
+                                  });
+                                },
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    hintText: "Sifre",
+                                    hintStyle: TextStyle(color: Colors.grey)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FlatButton(
+                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 36.0, vertical: 16.0),
+                              child: Text(
+                                "Sifreyi Kaydet",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            DefinePasswordRequest(
+                                    _phone, _password, _definePasswordToken)
+                                .call()
+                                .then((result) {
+                              if (result.success == true) {
+                                setState(() {
+                                  _isLogin = false;
+                                  _isRegister = false;
+                                  _isVerification = false;
+                                  _isDefinePassword = false;
+                                });
+                              }
                             });
                           },
-                          style: TextStyle(
-                            color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0x50FFFFFF),
+                            width: 2,
                           ),
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              hintText: "Sifre",
-                              hintStyle: TextStyle(color: Colors.grey)),
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: InkWell(
+                          child: Container(
+                            child: Text(
+                              'Şifrenizi mi unuttunuz?',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForgotPassword(),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 12,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(horizontal: 2.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 36.0, vertical: 16.0),
-                        child: Text(
-                          "Sifreyi Kaydet",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      DefinePasswordRequest(
-                              _phone, _password, _definePasswordToken)
-                          .call()
-                          .then((result) {
-                        if (result.success == true) {
-                          setState(() {
-                            _isLogin = false;
-                            _isRegister = false;
-                            _isVerification = false;
-                            _isDefinePassword = false;
-                          });
-                        }
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0x50FFFFFF),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: InkWell(
-                    child: Container(
-                      child: Text(
-                        'Şifrenizi mi unuttunuz?',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ForgotPassword(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }

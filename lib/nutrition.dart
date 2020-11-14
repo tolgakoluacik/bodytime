@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:bodytime/configurations.dart';
 import 'package:flutter/material.dart';
 
 import 'configurations.dart';
-import 'models/subscriber.dart';
-import 'utils/preferences.dart';
+//import 'models/subscriber.dart';
+//import 'utils/preferences.dart';
 
 class Nutrition extends StatefulWidget {
   Nutrition({Key key, this.title, this.onClickLogout}) : super(key: key);
@@ -18,14 +16,14 @@ class Nutrition extends StatefulWidget {
 }
 
 class _NutritionState extends State<Nutrition> {
-  Subscriber _subscriber;
+  //Subscriber _subscriber;
 
   @override
   void initState() {
     super.initState();
 
-    _subscriber =
-        Subscriber.fromDynamic(json.decode(Storage.getString("sessionUser")));
+    //_subscriber =
+        //Subscriber.fromDynamic(json.decode(Storage.getString("sessionUser")));
   }
 
   @override

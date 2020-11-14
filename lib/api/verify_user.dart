@@ -1,6 +1,4 @@
 import 'package:bodytime/api/base_call.dart' as BaseCall;
-import 'package:bodytime/api/login.dart';
-import 'package:bodytime/models/subscriber.dart';
 
 class VerificationRequest extends BaseCall.BasePostCall<LoginResponse> {
   @override

@@ -28,6 +28,27 @@ class _ProfileState extends State<Profile> {
         Subscriber.fromDynamic(json.decode(Storage.getString("sessionUser")));
   }
 
+  Widget _buildProfileText(String name) {
+    String firstLetter = name.split(" ")[0][0];
+    String secondLetter = name.split(" ")[1][0];
+
+    return Container(
+      padding: EdgeInsets.all(33),
+      decoration: BoxDecoration(
+        color: _subscriber.gender == 'erkek' ? Color(0xFF138BF2) : Color(0xFFC003D9),
+        borderRadius: BorderRadius.all(Radius.circular(100)),
+      ),
+      child: Text(
+        firstLetter + secondLetter,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 35,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,12 +57,7 @@ class _ProfileState extends State<Profile> {
         children: [
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: CircleAvatar(
-              radius: 100,
-              backgroundImage: NetworkImage(_subscriber.gender == 'erkek'
-                  ? "https://image.freepik.com/free-vector/profile-icon-male-avatar-hipster-man-wear-headphones_48369-8728.jpg"
-                  : "https://image.freepik.com/free-vector/profile-icon-female-avatar-hipster-woman-wear-headphones_48369-8726.jpg"),
-            ),
+            child: _buildProfileText(_subscriber.name),
           ),
           Expanded(
             child: CustomScrollView(
@@ -84,10 +100,10 @@ class _ProfileState extends State<Profile> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
         color: Color(0xFFF2F1F7),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(
               icon,
